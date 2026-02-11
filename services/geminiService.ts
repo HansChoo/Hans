@@ -1,9 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-
 export const generateCreativeContent = async (prompt: string): Promise<string> => {
   try {
+    // Initialize inside the function to prevent top-level crash if API_KEY is missing during Vercel build/deploy
+    const apiKey = process.env.API_KEY;
+    
+    if (!apiKey) {
+      console.error("API Key is missing");
+      return "시스템 설정 오류: API 키가 설정되지 않았습니다. Vercel 환경 변수를 확인해주세요.";
+    }
+
+    const ai = new GoogleGenAI({ apiKey });
+
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
