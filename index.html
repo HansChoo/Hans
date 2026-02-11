@@ -15,14 +15,15 @@
     <meta property="og:url" content="https://hemastudio.com/" />
     <meta property="og:title" content="HEMA AI STUDIO" />
     <meta property="og:description" content="AI 기술의 정점에서 만나는 혁신적인 크리에이티브 솔루션. AI 디렉터와 상담해보세요." />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=1200&auto=format&fit=crop" />
+    <!-- Updated OG Image to match 3D Dark Theme -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1200&auto=format&fit=crop" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://hemastudio.com/" />
     <meta property="twitter:title" content="HEMA AI STUDIO" />
     <meta property="twitter:description" content="AI 기술의 정점에서 만나는 혁신적인 크리에이티브 솔루션. AI 디렉터와 상담해보세요." />
-    <meta property="twitter:image" content="https://images.unsplash.com/photo-1614850523060-8da1d56ae167?q=80&w=1200&auto=format&fit=crop" />
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=1200&auto=format&fit=crop" />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -53,16 +54,19 @@
   <script type="importmap">
 {
   "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1"
   }
 }
 </script>
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

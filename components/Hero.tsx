@@ -2,8 +2,8 @@ import React from 'react';
 import { ArrowDown } from 'lucide-react';
 
 const Hero: React.FC = () => {
-  const scrollToServices = () => {
-    const element = document.getElementById('services');
+  const scrollToAssistant = () => {
+    const element = document.getElementById('assistant');
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -37,10 +37,10 @@ const Hero: React.FC = () => {
           
           <div className="mt-12">
             <button 
-              onClick={scrollToServices}
+              onClick={scrollToAssistant}
               className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-white/10 font-pj rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 backdrop-blur-sm border border-white/20 hover:bg-white/20 hover:scale-105 pointer-events-auto"
             >
-              AI서비스 둘러보기
+              AI 디렉터 상담하기
               <ArrowDown className="ml-2 w-5 h-5 group-hover:animate-bounce" />
             </button>
           </div>

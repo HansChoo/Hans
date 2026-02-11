@@ -7,7 +7,7 @@ const StudioChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: 'model',
-      text: '안녕하세요! HEMA AI STUDIO의 AI디렉터입니다. \n\n저희는 AI 노래 녹음, 부모님 감사영상, 뮤직비디오 제작, 음반 발매 서비스를 제공하고 있습니다. \n\n어떤 서비스에 대해 안내해 드릴까요?',
+      text: '안녕하세요! HEMA AI STUDIO의 AI디렉터입니다. \n\n[AI 노래 녹음](#detail-recording)\n[AI 부모님 감사영상](#detail-parents)\n[AI 뮤직비디오 제작](#detail-mv)\n[AI 음반 발매](#detail-album)\n\n서비스 중 어떤 것이 궁금하신가요?',
       timestamp: new Date()
     }
   ]);
@@ -30,21 +30,26 @@ const StudioChat: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || loading === LoadingState.LOADING) return;
+  // Unified function to handle sending messages (user typed or link clicked)
+  const processMessage = async (textToSend: string) => {
+    if (!textToSend.trim() || loading === LoadingState.LOADING) return;
 
     const userMessage: ChatMessage = {
       role: 'user',
-      text: input,
+      text: textToSend,
       timestamp: new Date()
     };
 
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
     setLoading(LoadingState.LOADING);
+    
+    // Clear input if the message matches the current input (typed case)
+    if (textToSend === input) {
+      setInput('');
+    }
 
     try {
-      const responseText = await generateCreativeContent(input);
+      const responseText = await generateCreativeContent(textToSend);
       
       const botMessage: ChatMessage = {
         role: 'model',
@@ -60,34 +65,74 @@ const StudioChat: React.FC = () => {
     }
   };
 
+  const handleSendClick = () => {
+    processMessage(input);
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      handleSendClick();
     }
   };
 
-  // Helper to render text with clickable links
+  // Helper to render text with clickable links (Markdown style [text](url) and raw URLs)
   const renderMessageContent = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
+    const regex = /\[([^\]]+)\]\(([^)]+)\)|(https?:\/\/[^\s]+)/g;
+    const parts = [];
+    let lastIndex = 0;
+    let match;
 
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a 
-            key={index} 
-            href={part} 
-            target="_blank" 
-            rel="noopener noreferrer" 
+    while ((match = regex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.substring(lastIndex, match.index));
+      }
+
+      if (match[1] && match[2]) {
+        // Markdown Link [text](url)
+        const linkText = match[1];
+        const linkUrl = match[2];
+        parts.push(
+          <button
+            key={match.index}
+            onClick={() => {
+              if (linkUrl.startsWith('#')) {
+                // Modified behavior: Instead of scrolling, ask the AI about the topic
+                // We send the link text (e.g., "AI 노래 녹음") as a user message
+                processMessage(`${linkText}에 대해 자세히 설명해줘`);
+              } else {
+                window.open(linkUrl, '_blank');
+              }
+            }}
+            className="text-purple-400 hover:text-purple-300 font-bold hover:underline cursor-pointer bg-transparent border-none p-0 inline mx-1 text-left"
+          >
+            {linkText}
+          </button>
+        );
+      } else if (match[3]) {
+        // Raw URL
+        const url = match[3];
+        parts.push(
+          <a
+            key={match.index}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-purple-400 hover:text-purple-300 underline break-all"
           >
-            {part}
+            {url}
           </a>
         );
       }
-      return <span key={index}>{part}</span>;
-    });
+
+      lastIndex = regex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+      parts.push(text.substring(lastIndex));
+    }
+
+    return parts;
   };
 
   return (
@@ -155,7 +200,7 @@ const StudioChat: React.FC = () => {
             className="flex-1 bg-transparent text-white placeholder-gray-500 focus:outline-none resize-none h-12 py-3 px-2"
           />
           <button 
-            onClick={handleSend}
+            onClick={handleSendClick}
             disabled={!input.trim() || loading === LoadingState.LOADING}
             className="p-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
